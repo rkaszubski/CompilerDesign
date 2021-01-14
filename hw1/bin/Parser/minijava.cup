@@ -1,0 +1,114 @@
+/**
+ * CUP specification of the language grammar for a simple demo language.
+ * Change this into the language grammar of MiniJava for your implementation.
+ *
+ */
+
+package Parser;
+
+import AST.*;
+import java.util.*;
+import java_cup.runtime.*;
+
+/* Terminals (lexical tokens returned by the scanner): */
+
+/* reserved words */
+terminal DISPLAY;
+terminal PRINT;
+
+/* operators: */
+terminal PLUS, BECOMES, MULT, LESS, AND, OR, NOT, MINUS;
+
+/* delimiters: */
+terminal LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, SEMICOLON, COMMA;
+
+/* tokens with values: */
+terminal String IDENTIFIER, INTEGER;
+
+/* other tokens */
+terminal TRUE, FALSE, INT, BOOLEAN, STRING, VOID;
+terminal WHILE, IF, ELSE;
+terminal DOT, LENGTH, NEW, THIS;
+terminal PUBLIC, STATIC;
+terminal CLASS, EXTENDS;
+terminal MAIN, RETURN;
+
+
+/* Nonterminals */
+
+nonterminal Program Program;
+nonterminal MainClass MainClass;
+/* classes */
+nonterminal ClassDeclList ClassDeclList;
+nonterminal ClassDeclList NonEmptyCDL;
+nonterminal ClassDecl ClassDecl;
+/* methods */
+nonterminal MethodDeclList MethodDeclList;
+nonterminal MethodDeclList NonEmptyMDL;
+nonterminal MethodDecl MethodDecl; 
+/* statements */
+nonterminal StatementList StatementList;
+nonterminal StatementList NonEmptySL; 
+nonterminal Statement Statement; 
+nonterminal Assign AssignStatement;
+nonterminal Print DisplayStatement;
+nonterminal While WhileStatement;
+nonterminal If IfStatement;
+nonterminal ArrayAssign ArrayAssignStatement;
+/* formals and variable declarations */
+nonterminal FormalList FormalList;
+nonterminal FormalList NonEmptyFL; 
+nonterminal VarDeclList VarDeclList;
+nonterminal Formal Formal;
+nonterminal VarDecl VarDecl; 
+/* expressions */
+nonterminal ExpList ArgumentList;
+nonterminal ExpList NonEmptyAL;
+nonterminal Exp Expression;
+/***************/
+nonterminal Type Type;
+nonterminal Identifier Identifier;
+
+
+/* Precedence declarations */
+
+precedence left BECOMES;
+precedence left AND;
+precedence left OR;
+precedence left LESS;
+precedence left PLUS, MINUS;
+precedence left MULT;
+precedence left NOT;
+precedence left LBRACKET;
+precedence left DOT;
+
+
+/* Productions: */
+
+Program ::= Statement:s
+            {: List<Statement> p = new LinkedList<Statement>();
+               p.add(s);
+               RESULT = p; :}
+        | Program:p Statement:s
+            {: p.add(s); RESULT = p; :};
+
+Statement   ::= AssignStatement:s
+                {: RESULT = s; :}
+            | DisplayStatement:s
+                {: RESULT = s; :};
+
+AssignStatement ::= Identifier:id BECOMES Expression:expr SEMICOLON
+                    {: RESULT = new Assign(id, expr, idxleft); :};
+
+Identifier  ::= IDENTIFIER:id
+                {: RESULT = new Identifier(id, idxleft); :};
+
+DisplayStatement ::= DISPLAY:d Expression:expr SEMICOLON
+                     {: RESULT = new Display(expr, dxleft); :};
+
+Expression    ::= IDENTIFIER:name
+            {: RESULT = new IdentifierExp(name, namexleft); :}
+        | Expression:arg1 PLUS Expression:arg2
+            {: RESULT = new Plus(arg1, arg2, arg1xleft); :}
+        | LPAREN Expression:expr RPAREN
+            {: RESULT = expr; :};

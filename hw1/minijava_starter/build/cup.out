@@ -1,0 +1,323 @@
+Warning : Terminal "LBRACKET" was declared but never used
+Warning : Terminal "MULT" was declared but never used
+Warning : Terminal "PERIOD" was declared but never used
+Warning : Terminal "RCURLYBRACKET" was declared but never used
+Warning : Terminal "INT" was declared but never used
+Warning : Terminal "PRINTLN" was declared but never used
+Warning : Terminal "MINUS" was declared but never used
+Warning : Terminal "STATIC" was declared but never used
+Warning : Terminal "NOT" was declared but never used
+Warning : Terminal "AND" was declared but never used
+Warning : Terminal "LT" was declared but never used
+Warning : Terminal "COMMA" was declared but never used
+Warning : Terminal "CLASS" was declared but never used
+Warning : Terminal "MAIN" was declared but never used
+Warning : Terminal "IF" was declared but never used
+Warning : Terminal "THIS" was declared but never used
+Warning : Terminal "BOOLEAN" was declared but never used
+Warning : Terminal "RETURN" was declared but never used
+Warning : Terminal "RBRACKET" was declared but never used
+Warning : Terminal "TRUE" was declared but never used
+Warning : Terminal "NEW" was declared but never used
+Warning : Terminal "VOID" was declared but never used
+Warning : Terminal "ELSE" was declared but never used
+Warning : Terminal "WHILE" was declared but never used
+Warning : Terminal "PUBLIC" was declared but never used
+Warning : Terminal "EXTENDS" was declared but never used
+Warning : Terminal "STRING" was declared but never used
+Warning : Terminal "FALSE" was declared but never used
+Warning : Terminal "LCURLYBRACKET" was declared but never used
+Warning : Terminal "LENGTH" was declared but never used
+Warning : Terminal "INTEGER_LITERAL" was declared but never used
+===== Terminals =====
+[0]EOF [1]error [2]DISPLAY [3]PUBLIC [4]STATIC 
+[5]CLASS [6]MAIN [7]VOID [8]RETURN [9]INT 
+[10]BOOLEAN [11]STRING [12]IF [13]ELSE [14]WHILE 
+[15]LENGTH [16]EXTENDS [17]TRUE [18]FALSE [19]PRINTLN 
+[20]THIS [21]NEW [22]PLUS [23]MINUS [24]MULT 
+[25]BECOMES [26]AND [27]NOT [28]LT [29]LPAREN 
+[30]RPAREN [31]SEMICOLON [32]COMMA [33]PERIOD [34]LBRACKET 
+[35]RBRACKET [36]LCURLYBRACKET [37]RCURLYBRACKET [38]IDENTIFIER [39]INTEGER_LITERAL 
+
+
+===== Non terminals =====
+[0]Program [1]Statement [2]AssignStatement [3]DisplayStatement [4]Expression 
+[5]Identifier 
+
+===== Productions =====
+[0] Program ::= Statement 
+[1] $START ::= Program EOF 
+[2] Program ::= Program Statement 
+[3] Statement ::= AssignStatement 
+[4] Statement ::= DisplayStatement 
+[5] AssignStatement ::= Identifier BECOMES Expression SEMICOLON 
+[6] Identifier ::= IDENTIFIER 
+[7] DisplayStatement ::= DISPLAY Expression SEMICOLON 
+[8] Expression ::= IDENTIFIER 
+[9] Expression ::= Expression PLUS Expression 
+[10] Expression ::= LPAREN Expression RPAREN 
+
+===== Viable Prefix Recognizer =====
+START lalr_state [0]: {
+  [AssignStatement ::= (*) Identifier BECOMES Expression SEMICOLON , {EOF DISPLAY IDENTIFIER }]
+  [Program ::= (*) Program Statement , {EOF DISPLAY IDENTIFIER }]
+  [DisplayStatement ::= (*) DISPLAY Expression SEMICOLON , {EOF DISPLAY IDENTIFIER }]
+  [Statement ::= (*) DisplayStatement , {EOF DISPLAY IDENTIFIER }]
+  [$START ::= (*) Program EOF , {EOF }]
+  [Identifier ::= (*) IDENTIFIER , {BECOMES }]
+  [Statement ::= (*) AssignStatement , {EOF DISPLAY IDENTIFIER }]
+  [Program ::= (*) Statement , {EOF DISPLAY IDENTIFIER }]
+}
+transition on Identifier to state [7]
+transition on IDENTIFIER to state [6]
+transition on DISPLAY to state [5]
+transition on DisplayStatement to state [4]
+transition on Statement to state [3]
+transition on AssignStatement to state [2]
+transition on Program to state [1]
+
+-------------------
+lalr_state [1]: {
+  [AssignStatement ::= (*) Identifier BECOMES Expression SEMICOLON , {EOF DISPLAY IDENTIFIER }]
+  [Program ::= Program (*) Statement , {EOF DISPLAY IDENTIFIER }]
+  [DisplayStatement ::= (*) DISPLAY Expression SEMICOLON , {EOF DISPLAY IDENTIFIER }]
+  [Statement ::= (*) DisplayStatement , {EOF DISPLAY IDENTIFIER }]
+  [$START ::= Program (*) EOF , {EOF }]
+  [Identifier ::= (*) IDENTIFIER , {BECOMES }]
+  [Statement ::= (*) AssignStatement , {EOF DISPLAY IDENTIFIER }]
+}
+transition on Identifier to state [7]
+transition on EOF to state [20]
+transition on IDENTIFIER to state [6]
+transition on DISPLAY to state [5]
+transition on Statement to state [19]
+transition on DisplayStatement to state [4]
+transition on AssignStatement to state [2]
+
+-------------------
+lalr_state [2]: {
+  [Statement ::= AssignStatement (*) , {EOF DISPLAY IDENTIFIER }]
+}
+
+-------------------
+lalr_state [3]: {
+  [Program ::= Statement (*) , {EOF DISPLAY IDENTIFIER }]
+}
+
+-------------------
+lalr_state [4]: {
+  [Statement ::= DisplayStatement (*) , {EOF DISPLAY IDENTIFIER }]
+}
+
+-------------------
+lalr_state [5]: {
+  [Expression ::= (*) IDENTIFIER , {PLUS SEMICOLON }]
+  [Expression ::= (*) LPAREN Expression RPAREN , {PLUS SEMICOLON }]
+  [DisplayStatement ::= DISPLAY (*) Expression SEMICOLON , {EOF DISPLAY IDENTIFIER }]
+  [Expression ::= (*) Expression PLUS Expression , {PLUS SEMICOLON }]
+}
+transition on LPAREN to state [11]
+transition on IDENTIFIER to state [10]
+transition on Expression to state [17]
+
+-------------------
+lalr_state [6]: {
+  [Identifier ::= IDENTIFIER (*) , {BECOMES }]
+}
+
+-------------------
+lalr_state [7]: {
+  [AssignStatement ::= Identifier (*) BECOMES Expression SEMICOLON , {EOF DISPLAY IDENTIFIER }]
+}
+transition on BECOMES to state [8]
+
+-------------------
+lalr_state [8]: {
+  [Expression ::= (*) IDENTIFIER , {PLUS SEMICOLON }]
+  [Expression ::= (*) LPAREN Expression RPAREN , {PLUS SEMICOLON }]
+  [Expression ::= (*) Expression PLUS Expression , {PLUS SEMICOLON }]
+  [AssignStatement ::= Identifier BECOMES (*) Expression SEMICOLON , {EOF DISPLAY IDENTIFIER }]
+}
+transition on LPAREN to state [11]
+transition on IDENTIFIER to state [10]
+transition on Expression to state [9]
+
+-------------------
+lalr_state [9]: {
+  [Expression ::= Expression (*) PLUS Expression , {PLUS SEMICOLON }]
+  [AssignStatement ::= Identifier BECOMES Expression (*) SEMICOLON , {EOF DISPLAY IDENTIFIER }]
+}
+transition on PLUS to state [14]
+transition on SEMICOLON to state [16]
+
+-------------------
+lalr_state [10]: {
+  [Expression ::= IDENTIFIER (*) , {PLUS RPAREN SEMICOLON }]
+}
+
+-------------------
+lalr_state [11]: {
+  [Expression ::= (*) IDENTIFIER , {PLUS RPAREN }]
+  [Expression ::= LPAREN (*) Expression RPAREN , {PLUS RPAREN SEMICOLON }]
+  [Expression ::= (*) LPAREN Expression RPAREN , {PLUS RPAREN }]
+  [Expression ::= (*) Expression PLUS Expression , {PLUS RPAREN }]
+}
+transition on LPAREN to state [11]
+transition on IDENTIFIER to state [10]
+transition on Expression to state [12]
+
+-------------------
+lalr_state [12]: {
+  [Expression ::= LPAREN Expression (*) RPAREN , {PLUS RPAREN SEMICOLON }]
+  [Expression ::= Expression (*) PLUS Expression , {PLUS RPAREN }]
+}
+transition on PLUS to state [14]
+transition on RPAREN to state [13]
+
+-------------------
+lalr_state [13]: {
+  [Expression ::= LPAREN Expression RPAREN (*) , {PLUS RPAREN SEMICOLON }]
+}
+
+-------------------
+lalr_state [14]: {
+  [Expression ::= (*) IDENTIFIER , {PLUS RPAREN SEMICOLON }]
+  [Expression ::= (*) LPAREN Expression RPAREN , {PLUS RPAREN SEMICOLON }]
+  [Expression ::= Expression PLUS (*) Expression , {PLUS RPAREN SEMICOLON }]
+  [Expression ::= (*) Expression PLUS Expression , {PLUS RPAREN SEMICOLON }]
+}
+transition on LPAREN to state [11]
+transition on IDENTIFIER to state [10]
+transition on Expression to state [15]
+
+-------------------
+lalr_state [15]: {
+  [Expression ::= Expression PLUS Expression (*) , {PLUS RPAREN SEMICOLON }]
+  [Expression ::= Expression (*) PLUS Expression , {PLUS RPAREN SEMICOLON }]
+}
+transition on PLUS to state [14]
+
+-------------------
+lalr_state [16]: {
+  [AssignStatement ::= Identifier BECOMES Expression SEMICOLON (*) , {EOF DISPLAY IDENTIFIER }]
+}
+
+-------------------
+lalr_state [17]: {
+  [DisplayStatement ::= DISPLAY Expression (*) SEMICOLON , {EOF DISPLAY IDENTIFIER }]
+  [Expression ::= Expression (*) PLUS Expression , {PLUS SEMICOLON }]
+}
+transition on PLUS to state [14]
+transition on SEMICOLON to state [18]
+
+-------------------
+lalr_state [18]: {
+  [DisplayStatement ::= DISPLAY Expression SEMICOLON (*) , {EOF DISPLAY IDENTIFIER }]
+}
+
+-------------------
+lalr_state [19]: {
+  [Program ::= Program Statement (*) , {EOF DISPLAY IDENTIFIER }]
+}
+
+-------------------
+lalr_state [20]: {
+  [$START ::= Program EOF (*) , {EOF }]
+}
+
+-------------------
+-------- ACTION_TABLE --------
+From state #0
+ [term 2:SHIFT(to state 5)] [term 38:SHIFT(to state 6)]
+From state #1
+ [term 0:SHIFT(to state 20)] [term 2:SHIFT(to state 5)]
+ [term 38:SHIFT(to state 6)]
+From state #2
+ [term 0:REDUCE(with prod 3)] [term 2:REDUCE(with prod 3)]
+ [term 38:REDUCE(with prod 3)]
+From state #3
+ [term 0:REDUCE(with prod 0)] [term 2:REDUCE(with prod 0)]
+ [term 38:REDUCE(with prod 0)]
+From state #4
+ [term 0:REDUCE(with prod 4)] [term 2:REDUCE(with prod 4)]
+ [term 38:REDUCE(with prod 4)]
+From state #5
+ [term 29:SHIFT(to state 11)] [term 38:SHIFT(to state 10)]
+From state #6
+ [term 25:REDUCE(with prod 6)]
+From state #7
+ [term 25:SHIFT(to state 8)]
+From state #8
+ [term 29:SHIFT(to state 11)] [term 38:SHIFT(to state 10)]
+From state #9
+ [term 22:SHIFT(to state 14)] [term 31:SHIFT(to state 16)]
+From state #10
+ [term 22:REDUCE(with prod 8)] [term 30:REDUCE(with prod 8)]
+ [term 31:REDUCE(with prod 8)]
+From state #11
+ [term 29:SHIFT(to state 11)] [term 38:SHIFT(to state 10)]
+From state #12
+ [term 22:SHIFT(to state 14)] [term 30:SHIFT(to state 13)]
+From state #13
+ [term 22:REDUCE(with prod 10)] [term 30:REDUCE(with prod 10)]
+ [term 31:REDUCE(with prod 10)]
+From state #14
+ [term 29:SHIFT(to state 11)] [term 38:SHIFT(to state 10)]
+From state #15
+ [term 22:REDUCE(with prod 9)] [term 30:REDUCE(with prod 9)]
+ [term 31:REDUCE(with prod 9)]
+From state #16
+ [term 0:REDUCE(with prod 5)] [term 2:REDUCE(with prod 5)]
+ [term 38:REDUCE(with prod 5)]
+From state #17
+ [term 22:SHIFT(to state 14)] [term 31:SHIFT(to state 18)]
+From state #18
+ [term 0:REDUCE(with prod 7)] [term 2:REDUCE(with prod 7)]
+ [term 38:REDUCE(with prod 7)]
+From state #19
+ [term 0:REDUCE(with prod 2)] [term 2:REDUCE(with prod 2)]
+ [term 38:REDUCE(with prod 2)]
+From state #20
+ [term 0:REDUCE(with prod 1)]
+------------------------------
+-------- REDUCE_TABLE --------
+From state #0
+ [non term 0->state 1] [non term 1->state 3] [non term 2->state 2]
+ [non term 3->state 4] [non term 5->state 7]
+From state #1
+ [non term 1->state 19] [non term 2->state 2] [non term 3->state 4]
+ [non term 5->state 7]
+From state #2
+From state #3
+From state #4
+From state #5
+ [non term 4->state 17]
+From state #6
+From state #7
+From state #8
+ [non term 4->state 9]
+From state #9
+From state #10
+From state #11
+ [non term 4->state 12]
+From state #12
+From state #13
+From state #14
+ [non term 4->state 15]
+From state #15
+From state #16
+From state #17
+From state #18
+From state #19
+From state #20
+-----------------------------
+------- CUP v0.11b 20160615 (GIT 4ac7450) Parser Generation Summary -------
+  0 errors and 31 warnings
+  40 terminals, 6 non-terminals, and 11 productions declared, 
+  producing 21 unique parse states.
+  31 terminals declared but not used.
+  0 non-terminals declared but not used.
+  0 productions never reduced.
+  0 conflicts detected (0 expected).
+  Code written to "parser.java", and "sym.java".
+---------------------------------------------------- (CUP v0.11b 20160615 (GIT 4ac7450))
